@@ -16,10 +16,21 @@ form.update-todo {
   grid-direction:row; 
   grid-template-columns: 50px 1fr;
 }
+input.edit[name=task] {
+  border: none;
+  box-shadow: none;
+}
+button.destroy{
+  display: block;
+}
+form .destroy:after {
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
 </style>
 <div class="view">
   <form action="/todos/${key}" class=" update-todo " method="POST" >
-    <button class="edit-task hidden" type=submit formaction="/todos/${key}">update</button> 
+    <button class="edit-task hidden" type=submit >update</button> 
     <input class="hidden toggle" name="completed" type="checkbox" ${checked} >
     <button class="set-complete" type=submit formaction="/todos/${key}?toggle" aria-label="toggle complete"></button> 
     <input type="text" name="task" value="${task}" class="edit" >
