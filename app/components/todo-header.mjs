@@ -8,7 +8,6 @@ export default class TodoHeader extends CustomElement  {
     super()
     this.api = api
     this.form = this.querySelector('form')
-    this.input = this.querySelector('form input[name=task]')
     this.addNewTask = this.addNewTask.bind(this)
     this.form.addEventListener('submit', this.newTask)
   }
@@ -16,7 +15,7 @@ export default class TodoHeader extends CustomElement  {
   addNewTask(event){
     event.preventDefault()
     this.api.create(this.form)
-    this.input.value = ''
+    this.form.reset()
   }
   
   render({html}){

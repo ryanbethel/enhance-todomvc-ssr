@@ -15,12 +15,11 @@ export default class TodoFooter extends CustomElement  {
     this.allAnchor = document.querySelector('a[href="/todos"]');
     this.completedAnchor = document.querySelector('a[href="/todos?filter=completed"]');
     this.activeAnchor = document.querySelector('a[href="/todos?filter=active"]');
-    this.allAnchor.addEventListener('click', this.handleIntercept);
-    this.allAnchor.addEventListener('keydown', this.handleIntercept);
-    this.completedAnchor.addEventListener('keydown', this.handleIntercept);
-    this.completedAnchor.addEventListener('click', this.handleIntercept);
-    this.activeAnchor.addEventListener('click', this.handleIntercept);
-    this.activeAnchor.addEventListener('keydown', this.handleIntercept);
+    this.filters = this.querySelectorAll('ul.filters li a')
+    this.filters.forEach(anchor=>{
+      anchor.addEventListener('click', this.handleIntercept)
+      anchor.addEventListener('keydown', this.handleIntercept)
+    })
   }
 
   handleIntercept(event) {
