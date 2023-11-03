@@ -7,6 +7,9 @@ export default class TodoList extends CustomElement  {
   constructor(){
     super()
     this.api = api
+  }
+
+  connectedCallback(){
     this.update = this.update.bind(this)
     this.list = this.querySelector('ul.todo-list')
     this.api.subscribe(this.update,['todos','filter'])
@@ -27,7 +30,7 @@ export default class TodoList extends CustomElement  {
       }
     }).map(todo => `
       <li id="${todo.key}" >
-      <todo-item class="todo" key="${todo.key}" completed="${todo.completed}" task="${todo.task}"></todo-item>
+      <todo-item  class="todo" key="${todo.key}" completed="${todo.completed}" task="${todo.task}"></todo-item>
       </li>
     `).join('')
 

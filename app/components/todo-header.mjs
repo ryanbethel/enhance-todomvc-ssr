@@ -7,6 +7,9 @@ export default class TodoHeader extends CustomElement  {
   constructor(){
     super()
     this.api = api
+  }
+
+  connectedCallback(){
     this.form = this.querySelector('form')
     this.addNewTask = this.addNewTask.bind(this)
     this.form.addEventListener('submit', this.newTask)

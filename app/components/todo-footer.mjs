@@ -10,7 +10,9 @@ export default class TodoFooter extends CustomElement  {
     const params = new URLSearchParams(document.location.search)
     const initialFilter = params.get("filter") 
     this.api.store.initialize({filter:initialFilter || 'all'})
+  }
 
+  connectedCallback(){
     this.handleIntercept = this.handleIntercept.bind(this)
     this.allAnchor = document.querySelector('a[href="/todos"]');
     this.completedAnchor = document.querySelector('a[href="/todos?filter=completed"]');
