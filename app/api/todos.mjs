@@ -24,6 +24,7 @@ export async function get (req) {
   if (filter==='active') todos = todos.filter(todo=>!todo.completed)
   if (filter==='completed') todos = todos.filter(todo=>todo.completed)
 
+  console.log('todos endpoint', todos)
   return {
     json: { todos }
   }
