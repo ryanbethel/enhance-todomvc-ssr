@@ -24,11 +24,11 @@ const  DESTROY = 'destroy'
 const  LIST    = 'list'
 
 // DB/CRUD Object Type
-const  ITEM = Schema.id 
+const  ITEM = Schema.id
 const  ITEMS = `${Schema.id}s`
 
 const store = Store()
- 
+
 let worker
 export default function API() {
 
@@ -73,11 +73,20 @@ function mutate(e) {
   }
 }
 
+function updateStore(todos) {
+  console.log(
+    'update store got called', todos
+  )
+  store.todos = todos
+  store.active = todos.filter((todo) => !todo.completed)
+  store.completed = todos.filter((todo) => todo.completed)
+}
+
 function createMutation({ problems={}, ...rest }) {
   const item = rest[ITEM] || {}
   const copy = store?.[ITEMS]?.slice() || []
   copy.push(item)
-  store[ITEMS] = copy
+  updateStore(copy)
   store.problems = problems
 }
 
@@ -85,7 +94,7 @@ function updateMutation({ problems={}, ...rest }) {
   const item = rest[ITEM] || {}
   const copy = store?.[ITEMS]?.slice() || []
   copy.splice(copy.findIndex(i => i.key === item.key), 1, item)
-  store[ITEMS] = copy
+  updateStore(copy)
   store.problems = problems
 }
 
@@ -93,23 +102,26 @@ function destroyMutation({ problems={}, ...rest }) {
   const item = rest[ITEM] || {}
   let copy = store?.[ITEMS]?.slice() || []
   copy.splice(copy.findIndex(i => i.key === item.key), 1)
-  store[ITEMS] = copy
+  updateStore(copy)
   store.problems = problems
 }
 
 function listMutation({  problems={}, ...rest }) {
+  console.log('list mutation called')
   const items = rest[ITEMS] || []
   if (notifyOnInitialize) {
-    // For CSR we directly set the store so that callbacks are called 
+    // For CSR we directly set the store so that callbacks are called
     // to rerender with data
-    store[ITEMS] = items
+    console.log('updating store')
+    updateStore(items)
     store.problems = problems
   } else {
     // For SSR we use initialize to avoid calling subscribed callbacks
     // which would cause an unnecessary rerender
     // const init = {problems}
     // init[ITEMS] = items
-    // store.initialize(init) 
+    // store.initialize(init)
+    console.log('initialize store')
     store.initialize({[ITEMS]:items, problems})
   }
 }

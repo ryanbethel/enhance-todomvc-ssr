@@ -1,4 +1,5 @@
-import CustomElement from '@enhance-labs/custom-element'
+/* globals customElements, document */
+import CustomElement from '@enhance/custom-element'
 import API from '../browser/api.mjs'
 const api = API()
 
@@ -8,36 +9,48 @@ export default class TodoFooter extends CustomElement  {
     super()
     this.api = api
     const params = new URLSearchParams(document.location.search)
-    const initialFilter = params.get("filter") 
+    const initialFilter = params.get("filter")
     this.api.store.initialize({filter:initialFilter || 'all'})
   }
 
-  connectedCallback(){
+  connectedCallback() {
+    this.footer = this.querySelector('footer')
+    this.counter = this.querySelector('strong')
+    this.filters = this.querySelector('ul.filters')
+    this.button = this.querySelector('button')
+
     this.handleIntercept = this.handleIntercept.bind(this)
-    this.allAnchor = document.querySelector('a[href="/todos"]');
-    this.completedAnchor = document.querySelector('a[href="/todos?filter=completed"]');
-    this.activeAnchor = document.querySelector('a[href="/todos?filter=active"]');
-    this.filters = this.querySelectorAll('ul.filters li a')
-    this.filters.forEach(anchor=>{
-      anchor.addEventListener('click', this.handleIntercept)
-      anchor.addEventListener('keydown', this.handleIntercept)
-    })
+    this.update = this.update.bind(this)
+    this.api.subscribe(this.update, [ 'active', 'completed', 'todos' ])
+
+    this.filters.addEventListener('click', this.handleIntercept)
+    this.filters.addEventListener('keydown', this.handleIntercept)
+  }
+
+  update(data) {
+    let { active = [], completed = [], todos = [] } = data
+    this.counter.innerText = active.length
+    this.footer.style.display = todos.length > 0 ? 'block' : 'none'
+    this.button.style.display = completed.length > 0 ? 'block' : 'none'
   }
 
   handleIntercept(event) {
     if (event.type === 'click' || (event.type === 'keydown' && event.key === 'Enter')) {
       event.preventDefault();
+      let list = Array.from(this.filters.querySelectorAll('a'))
+      list.map(anchor => {
+        anchor === event.target ? anchor.classList.add('selected') : anchor.classList.remove('selected')
+      })
       const url = new URL(event.target.href);
       const filter = url.searchParams.get("filter") || 'all'
       this.api.store.filter = filter
-      history.pushState({}, "", url);
     }
   }
 
   render({html,state}){
     const { store = {} } = state
-    const { todos =[] } = store
-    const display = todos.length ? 'block' : 'none'
+    const { todos = [], active = [], completed = [], filter = 'all' } = store
+    const display = (todos.length || active.length || completed.length) ? 'block' : 'none'
 
     return html`
 <style>
@@ -120,14 +133,15 @@ html .clear-completed:active {
 
 </style>
   <footer class="footer" style="display: ${display};">
-    <span class="todo-count"><strong>${todos.length}</strong> items left</span>
+    <span class="todo-count"><strong>${active.length}</strong> items left</span>
     <ul class="filters">
-      <li><a href="/todos" class="selected">All</a></li>
-      <li><a href="/todos?filter=active" >Active</a></li>
-      <li><a href="/todos?filter=completed" >Completed</a></li></ul>
-      <form action="/todos/completed/delete" method="POST">
-        <button class="clear-completed" >Clear completed</button>
-      </form>
+      <li><a href="/todos" class="${filter === 'all' ? 'selected' : ''}">All</a></li>
+      <li><a href="/todos?filter=active" class="${filter === 'active' ? 'selected' : ''}">Active</a></li>
+      <li><a href="/todos?filter=completed" class="${filter === 'completed' ? 'selected' : ''}">Completed</a></li>
+    </ul>
+    <form action="/todos/completed/delete" method="POST">
+      <button class="clear-completed" style="display: ${completed.length ? 'block' : 'none'};">Clear completed</button>
+    </form>
   </footer>
     `
   }

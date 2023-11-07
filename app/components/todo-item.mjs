@@ -1,11 +1,11 @@
-import CustomElement from '@enhance-labs/custom-element'
+/* globals customElements */
+import CustomElement from '@enhance/custom-element'
 import MorphdomMixin from '@enhance/morphdom-mixin'
 import API from '../browser/api.mjs'
 const api = API()
 
 
 export default class TodoItem extends MorphdomMixin(CustomElement)  {
-// export default class TodoItem extends CustomElement  {
   constructor(){
     super()
     this.api = api
@@ -56,10 +56,10 @@ export default class TodoItem extends MorphdomMixin(CustomElement)  {
     event.preventDefault()
     if (event.submitter === this.setComplete) {
       this.completed.checked = !this.completed?.checked
-    } 
+    }
     this.api.update(this.updateForm)
   }
-  
+
   render({html,state}){
     const { attrs = {} } = state
     const { completed = '', key = '', task = '' } = attrs
@@ -74,7 +74,7 @@ export default class TodoItem extends MorphdomMixin(CustomElement)  {
 }
 form.update-todo {
   display:grid;
-  grid-direction:row; 
+  grid-direction:row;
   grid-template-columns: 50px 1fr;
 }
 input.edit[name=task] {
@@ -91,9 +91,9 @@ form .destroy:after {
 </style>
 <div class="view">
   <form  action="/todos/${key}" class=" update-todo " method="POST" >
-    <button class="edit-task hidden" type=submit >update</button> 
+    <button class="edit-task hidden" type=submit >update</button>
     <input class="hidden toggle" name="completed" type="checkbox" ${checked} >
-    <button class="set-complete" type=submit formaction="/todos/${key}?toggle" aria-label="toggle complete"></button> 
+    <button class="set-complete" type=submit formaction="/todos/${key}?toggle" aria-label="toggle complete"></button>
     <input type="text" name="task" value="${task}" class="edit" >
     <input type="hidden" name="key" value="${key}">
   </form>
@@ -103,7 +103,6 @@ form .destroy:after {
     <button class="destroy"></button>
   </form>
 </div>
-
   `
   }
 }
