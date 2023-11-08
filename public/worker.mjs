@@ -4,6 +4,7 @@ const UPDATE = 'update'
 const DESTROY = 'destroy'
 const LIST = 'list'
 const CLEAR = 'clear'
+const TOGGLE = 'toggle'
 
 const  ITEM = 'todo'
 const  ITEMS = `${ITEM}s`
@@ -121,6 +122,28 @@ async function stateMachine ({ data }) {
 
       self.postMessage({
         type: CLEAR
+      })
+    } catch (err) {
+      // RESPOND WITH ERROR
+      console.error(err)
+    }
+    break
+  case TOGGLE:
+    try {
+      const result = await (await fetch(
+        `/${ITEMS}/toggle`, {
+          credentials: 'same-origin',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          method: 'POST'
+        }
+      )).json()
+
+      self.postMessage({
+        type: TOGGLE,
+        result
       })
     } catch (err) {
       // RESPOND WITH ERROR

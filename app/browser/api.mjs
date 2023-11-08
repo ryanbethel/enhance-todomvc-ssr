@@ -21,6 +21,7 @@ const  UPDATE  = 'update'
 const  DESTROY = 'destroy'
 const  LIST    = 'list'
 const  CLEAR   = 'clear'
+const  TOGGLE  = 'toggle'
 
 // DB/CRUD Object Type
 const  ITEM = Schema.id
@@ -44,6 +45,7 @@ export default function API() {
     destroy,
     list,
     clear,
+    toggle,
     store,
     subscribe: store.subscribe,
     unsubscribe: store.unsubscribe
@@ -51,7 +53,6 @@ export default function API() {
 }
 
 function initialize() {
-  console.log('initialize called')
   list()
 }
 
@@ -73,6 +74,9 @@ function mutate(e) {
     break
   case CLEAR:
     updateStore(store.active)
+    break
+  case TOGGLE:
+    listMutation(result)
     break
   }
 }
@@ -107,7 +111,7 @@ function destroyMutation({ problems={}, ...rest }) {
   store.problems = problems
 }
 
-function listMutation({  problems={}, ...rest }) {
+function listMutation({ problems={}, ...rest }) {
   console.log('list mutation called')
   const items = rest[ITEMS] || []
   if (store[ITEMS]) {
@@ -168,5 +172,11 @@ function update (form) {
 function clear () {
   worker.postMessage({
     type: CLEAR
+  })
+}
+
+function toggle () {
+  worker.postMessage({
+    type: TOGGLE
   })
 }

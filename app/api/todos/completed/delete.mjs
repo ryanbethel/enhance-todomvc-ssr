@@ -1,4 +1,4 @@
-// View documentation at: https://enhance.dev/docs/learn/starter-project/api
+/* globals Promise */
 import { deleteTodo, getTodos } from '../../../models/todos.mjs'
 
 

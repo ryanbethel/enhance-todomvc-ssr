@@ -12,9 +12,16 @@ export default class TodoList extends CustomElement  {
 
   connectedCallback(){
     this.update = this.update.bind(this)
+    this.toggle = this.toggle.bind(this)
     this.section = this.querySelector('section')
     this.list = this.querySelector('ul.todo-list')
+    this.toggleBtn = this.querySelector('button.toggle-all')
     this.api.subscribe(this.update,['todos', 'filter'])
+    this.toggleBtn.addEventListener('click', this.toggle)
+  }
+
+  disconnectedCallback(){
+    this.toggleBtn.removeEventListener('click', this.toggle)
   }
 
   update(){
@@ -26,6 +33,11 @@ export default class TodoList extends CustomElement  {
         <todo-item  class="todo" key="${todo.key}" completed="${todo.completed}" task="${todo.task}"></todo-item>
       </li>
     `).join('')
+  }
+
+  toggle(event) {
+    event.preventDefault()
+    this.api.toggle()
   }
 
   render({html,state}){
@@ -218,8 +230,10 @@ export default class TodoList extends CustomElement  {
 
     </style>
     <section class="main" style="display: ${display};">
-      <input id="toggle-all" type="checkbox" class="toggle-all">
-      <label for="toggle-all">Mark all as complete</label>
+      <form action="/todos/toggle" method="POST">
+        <button id="toggle-all" type="submit" class="toggle-all"></button>
+        <label for="toggle-all">Mark all as complete</label>
+      </form>
       <ul class="todo-list">
         ${listItems}
       </ul>
