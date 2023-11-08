@@ -1,4 +1,4 @@
-/* global window, Worker */
+/* global Worker */
 import Store from '@enhance/store'
 import convertToNestedObject from '@begin/validator/src/convert-to-nested-object.js'
 import formEncodingToSchema from '@begin/validator/src/form-encoding-to-schema.js'
@@ -22,6 +22,7 @@ const  CREATE  = 'create'
 const  UPDATE  = 'update'
 const  DESTROY = 'destroy'
 const  LIST    = 'list'
+const  CLEAR   = 'clear'
 
 // DB/CRUD Object Type
 const  ITEM = Schema.id
@@ -44,6 +45,7 @@ export default function API() {
     update,
     destroy,
     list,
+    clear,
     store,
     subscribe: store.subscribe,
     unsubscribe: store.unsubscribe
@@ -70,13 +72,13 @@ function mutate(e) {
   case LIST:
     listMutation(result)
     break
+  case CLEAR:
+    updateStore(store.active)
+    break
   }
 }
 
 function updateStore(todos) {
-  console.log(
-    'update store got called', todos
-  )
   store.todos = todos
   store.active = todos.filter((todo) => !todo.completed)
   store.completed = todos.filter((todo) => todo.completed)
@@ -162,3 +164,8 @@ function update (form) {
   })
 }
 
+function clear () {
+  worker.postMessage({
+    type: CLEAR
+  })
+}

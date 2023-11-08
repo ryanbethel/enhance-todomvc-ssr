@@ -3,6 +3,7 @@ const CREATE = 'create'
 const UPDATE = 'update'
 const DESTROY = 'destroy'
 const LIST = 'list'
+const CLEAR = 'clear'
 
 const  ITEM = 'todo'
 const  ITEMS = `${ITEM}s`
@@ -99,6 +100,27 @@ async function stateMachine ({ data }) {
       self.postMessage({
         type: LIST,
         result
+      })
+    } catch (err) {
+      // RESPOND WITH ERROR
+      console.error(err)
+    }
+    break
+  case CLEAR:
+    try {
+      await fetch(
+        `/${ITEMS}/completed/delete`, {
+          credentials: 'same-origin',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          method: 'POST'
+        }
+      )
+
+      self.postMessage({
+        type: CLEAR
       })
     } catch (err) {
       // RESPOND WITH ERROR

@@ -18,13 +18,16 @@ export default class TodoFooter extends CustomElement  {
     this.counter = this.querySelector('strong')
     this.filters = this.querySelector('ul.filters')
     this.button = this.querySelector('button')
+    this.clearCompleted = this.querySelector('button.clear-completed')
 
     this.handleIntercept = this.handleIntercept.bind(this)
     this.update = this.update.bind(this)
+    this.clear = this.clear.bind(this)
     this.api.subscribe(this.update, [ 'active', 'completed', 'todos' ])
 
     this.filters.addEventListener('click', this.handleIntercept)
     this.filters.addEventListener('keydown', this.handleIntercept)
+    this.clearCompleted.addEventListener('click', this.clear)
   }
 
   update(data) {
@@ -34,9 +37,14 @@ export default class TodoFooter extends CustomElement  {
     this.button.style.display = completed.length > 0 ? 'block' : 'none'
   }
 
+  clear(event) {
+    event.preventDefault()
+    this.api.clear()
+  }
+
   handleIntercept(event) {
     if (event.type === 'click' || (event.type === 'keydown' && event.key === 'Enter')) {
-      event.preventDefault();
+      event.preventDefault()
       let list = Array.from(this.filters.querySelectorAll('a'))
       list.map(anchor => {
         anchor === event.target ? anchor.classList.add('selected') : anchor.classList.remove('selected')
