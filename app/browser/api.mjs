@@ -33,7 +33,7 @@ let worker
 export default function API() {
 
   if (!worker) {
-    worker =  new Worker('/_public/worker.mjs')
+    worker =  new Worker('/_public/browser/worker.mjs')
     worker.onmessage = mutate
 
     initialize()
