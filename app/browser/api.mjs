@@ -124,7 +124,9 @@ function listMutation({  problems={}, ...rest }) {
     // init[ITEMS] = items
     // store.initialize(init)
     console.log('initialize store')
-    store.initialize({[ITEMS]:items, problems})
+    let active = items.filter((item) => !item.completed)
+    let completed = items.filter((item) => item.completed)
+    store.initialize({[ITEMS]:items, active, completed, problems})
   }
 }
 

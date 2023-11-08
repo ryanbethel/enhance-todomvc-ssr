@@ -14,7 +14,7 @@ export default class TodoList extends CustomElement  {
     this.update = this.update.bind(this)
     this.section = this.querySelector('section')
     this.list = this.querySelector('ul.todo-list')
-    this.api.subscribe(this.update,['todos'])
+    this.api.subscribe(this.update,['todos', 'filter'])
   }
 
   update(){
