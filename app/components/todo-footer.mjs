@@ -30,6 +30,12 @@ export default class TodoFooter extends CustomElement  {
     this.clearCompleted.addEventListener('click', this.clear)
   }
 
+  disconnectedCallback() {
+    this.filters.removeEventListener('click', this.handleIntercept)
+    this.filters.removeEventListener('keydown', this.handleIntercept)
+    this.clearCompleted.removeEventListener('click', this.clear)
+  }
+
   update(data) {
     let { active = [], completed = [], todos = [] } = data
     this.counter.innerText = active.length

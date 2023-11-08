@@ -26,6 +26,12 @@ export default class TodoItem extends MorphdomMixin(CustomElement)  {
     this.updateForm.addEventListener('submit', this.update)
   }
 
+  disconnectedCallback() {
+    this.task.removeEventListener('blur', this.update)
+    this.deleteForm.removeEventListener('submit', this.destroy)
+    this.updateForm.removeEventListener('submit', this.update)
+  }
+
   destroy(event){
     event.preventDefault()
     this.api.destroy(this.deleteForm)
@@ -52,7 +58,6 @@ export default class TodoItem extends MorphdomMixin(CustomElement)  {
   // }
 
   update(event){
-    console.log('update', event)
     event.preventDefault()
     if (event.submitter === this.setComplete) {
       this.completed.checked = !this.completed?.checked
@@ -85,8 +90,8 @@ button.destroy{
   display: block;
 }
 form .destroy:after {
-    position: absolute;
-    transform: translate(-50%, -50%);
+  position: absolute;
+  transform: translate(-50%, -50%);
 }
 </style>
 <div class="view">

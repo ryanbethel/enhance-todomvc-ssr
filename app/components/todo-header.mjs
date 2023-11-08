@@ -16,6 +16,10 @@ export default class TodoHeader extends CustomElement  {
     this.form.addEventListener('submit', this.newTask)
   }
 
+  disconnectedCallback() {
+    this.form.removeEventListener('submit', this.newTask)
+  }
+
   addNewTask(event){
     event.preventDefault()
     this.api.create(this.form)
