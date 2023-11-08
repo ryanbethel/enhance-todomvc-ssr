@@ -2,17 +2,8 @@
 import Store from '@enhance/store'
 import convertToNestedObject from '@begin/validator/src/convert-to-nested-object.js'
 import formEncodingToSchema from '@begin/validator/src/form-encoding-to-schema.js'
+import {Todo} from '../models/schemas/todo.mjs'
 
-// JSON Schema for DB/CRUD Object
-const Schema = {
-  id: 'todo',
-  type: 'object',
-  properties: {
-    key: { 'type': 'string' },
-    completed: { 'type': 'boolean' },
-    task: { 'type': 'string' },
-  }
-}
 
 
 // API actions
@@ -22,10 +13,6 @@ const  DESTROY = 'destroy'
 const  LIST    = 'list'
 const  CLEAR   = 'clear'
 const  TOGGLE  = 'toggle'
-
-// DB/CRUD Object Type
-const  ITEM = Schema.id
-const  ITEMS = `${Schema.id}s`
 
 const store = Store()
 
@@ -87,55 +74,41 @@ function updateStore(todos) {
   store.completed = todos.filter((todo) => todo.completed)
 }
 
-function createMutation({ problems={}, ...rest }) {
-  const item = rest[ITEM] || {}
-  const copy = store?.[ITEMS]?.slice() || []
-  copy.push(item)
+function createMutation({ problems={}, todo = {} }) {
+  const copy = store?.todos?.slice() || []
+  copy.push(todo)
   updateStore(copy)
   store.problems = problems
 }
 
-function updateMutation({ problems={}, ...rest }) {
-  const item = rest[ITEM] || {}
-  const copy = store?.[ITEMS]?.slice() || []
-  copy.splice(copy.findIndex(i => i.key === item.key), 1, item)
+function updateMutation({ problems={}, todo={} }) {
+  const copy = store?.todos?.slice() || []
+  copy.splice(copy.findIndex(i => i.key === todo.key), 1, todo)
   updateStore(copy)
   store.problems = problems
 }
 
-function destroyMutation({ problems={}, ...rest }) {
-  const item = rest[ITEM] || {}
-  let copy = store?.[ITEMS]?.slice() || []
-  copy.splice(copy.findIndex(i => i.key === item.key), 1)
+function destroyMutation({ problems={}, todo={} }) {
+  let copy = store?.todos?.slice() || []
+  copy.splice(copy.findIndex(i => i.key === todo.key), 1)
   updateStore(copy)
   store.problems = problems
 }
 
-function listMutation({ problems={}, ...rest }) {
-  console.log('list mutation called')
-  const items = rest[ITEMS] || []
-  if (store[ITEMS]) {
-    // For CSR we directly set the store so that callbacks are called
-    // to rerender with data
-    console.log('updating store')
-    updateStore(items)
+function listMutation({ problems={}, todos =[] }) {
+  if (store.todos) {
+    updateStore(todos)
     store.problems = problems
   } else {
-    // For SSR we use initialize to avoid calling subscribed callbacks
-    // which would cause an unnecessary rerender
-    // const init = {problems}
-    // init[ITEMS] = items
-    // store.initialize(init)
-    console.log('initialize store')
-    let active = items.filter((item) => !item.completed)
-    let completed = items.filter((item) => item.completed)
-    store.initialize({[ITEMS]:items, active, completed, problems})
+    let active = todos.filter((todo) => !todo.completed)
+    let completed = todos.filter((todo) => todo.completed)
+    store.initialize({todos, active, completed, problems})
   }
 }
 
 function processForm(form) {
   return JSON.stringify(
-    formEncodingToSchema( convertToNestedObject(new FormData(form)), Schema)
+    formEncodingToSchema( convertToNestedObject(new FormData(form)), Todo)
   )
 }
 
