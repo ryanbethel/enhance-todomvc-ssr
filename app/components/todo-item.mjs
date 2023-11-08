@@ -11,6 +11,10 @@ export default class TodoItem extends MorphdomMixin(CustomElement)  {
     this.api = api
   }
 
+  static get observedAttributes() {
+    return ['key', 'completed', 'task' ]
+  }
+
   connectedCallback(){
     this.updateForm = this.querySelector('form.update-todo')
     this.completed = this.querySelector('form.update-todo input[name=completed]')
@@ -18,16 +22,17 @@ export default class TodoItem extends MorphdomMixin(CustomElement)  {
     this.update = this.update.bind(this)
     this.setComplete = this.querySelector('button.set-complete')
     this.destroy = this.destroy.bind(this)
+    this.revert = this.revert.bind(this)
     this.deleteForm = this.querySelector('form.delete-todo')
     this.updateFormKeyInput = this.querySelector('form.update-todo input[name=key]')
     this.destroyFormKeyInput = this.querySelector('form.delete-todo input[name=key]')
-    this.task.addEventListener('blur', this.update)
+    this.task.addEventListener('blur', this.revert)
     this.deleteForm.addEventListener('submit', this.destroy)
     this.updateForm.addEventListener('submit', this.update)
   }
 
   disconnectedCallback() {
-    this.task.removeEventListener('blur', this.update)
+    this.task.removeEventListener('blur', this.revert)
     this.deleteForm.removeEventListener('submit', this.destroy)
     this.updateForm.removeEventListener('submit', this.update)
   }
@@ -37,25 +42,9 @@ export default class TodoItem extends MorphdomMixin(CustomElement)  {
     this.api.destroy(this.deleteForm)
   }
 
-  static get observedAttributes() {
-    return ['key', 'completed', 'task' ]
+  revert() {
+    this.task.value = this.getAttribute('task')
   }
-
-  // keyChanged(value){
-  //   this.updateFormKeyInput.value = value
-  //   this.destroyFormKeyInput.value = value
-  //   this.setComplete.setAttribute('formaction', `/todos/${value}?toggle`)
-  //   this.deleteForm.setAttribute('action', `/todos/${value}/delete`)
-  //   this.updateForm.setAttribute('action', `/todos/${value}`)
-  // }
-  // completedChanged(value){
-  //   this.completed.checked = value === 'true'
-  //   if (value) this.completed.setAttribute('checked','')
-  //   if (!value) this.completed.removeAttribute('checked')
-  // }
-  // taskChanged(value){
-  //   this.task.value = value
-  // }
 
   update(event){
     event.preventDefault()
