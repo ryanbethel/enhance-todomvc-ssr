@@ -12,32 +12,21 @@ export default class TodoList extends CustomElement  {
 
   connectedCallback(){
     this.update = this.update.bind(this)
+    this.section = this.querySelector('section')
     this.list = this.querySelector('ul.todo-list')
-    this.api.subscribe(this.update,['todos','filter'])
+    this.api.subscribe(this.update,['todos'])
   }
 
-  update(values){
-    let {todos, filter} = values
-    if (!filter) filter = this.api.store.filter
-    if (!todos) todos = this.api.store.todos
-
-    const listItems = todos.filter(todo=>{
-      if (filter==='active'){
-        return !todo.completed
-      } else if (filter==='completed'){
-        return todo.completed
-      } else {
-        return true
-      }
-    }).map(todo => `
+  update(){
+    let filter = this.api.store.filter
+    this.section.style.display = this.api.store.todos.length > 0 ? 'block' : 'none'
+    let items = filter === 'all' ? this.api.store.todos : this.api.store[filter]
+    this.list.innerHTML = items.map(todo => `
       <li id="${todo.key}" >
-      <todo-item  class="todo" key="${todo.key}" completed="${todo.completed}" task="${todo.task}"></todo-item>
+        <todo-item  class="todo" key="${todo.key}" completed="${todo.completed}" task="${todo.task}"></todo-item>
       </li>
     `).join('')
-
-    this.list.innerHTML = listItems
   }
-
 
   render({html,state}){
     const { store ={}} = state
