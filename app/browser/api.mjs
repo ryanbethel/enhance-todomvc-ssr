@@ -3,8 +3,6 @@ import Store from '@enhance/store'
 import convertToNestedObject from '@begin/validator/src/convert-to-nested-object.js'
 import formEncodingToSchema from '@begin/validator/src/form-encoding-to-schema.js'
 
-const notifyOnInitialize = false // false SSR because markup has initial data
-
 // JSON Schema for DB/CRUD Object
 const Schema = {
   id: 'todo',
@@ -36,9 +34,9 @@ export default function API() {
   if (!worker) {
     worker =  new Worker('/_public/worker.mjs')
     worker.onmessage = mutate
-  }
 
-  initialize()
+    initialize()
+  }
 
   return {
     create,
@@ -53,6 +51,7 @@ export default function API() {
 }
 
 function initialize() {
+  console.log('initialize called')
   list()
 }
 
@@ -111,7 +110,7 @@ function destroyMutation({ problems={}, ...rest }) {
 function listMutation({  problems={}, ...rest }) {
   console.log('list mutation called')
   const items = rest[ITEMS] || []
-  if (notifyOnInitialize) {
+  if (store[ITEMS]) {
     // For CSR we directly set the store so that callbacks are called
     // to rerender with data
     console.log('updating store')
