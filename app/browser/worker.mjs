@@ -6,8 +6,6 @@ const LIST = 'list'
 const CLEAR = 'clear'
 const TOGGLE = 'toggle'
 
-const  ITEM = 'todo'
-const  ITEMS = `${ITEM}s`
 
 self.onmessage = stateMachine
 
@@ -17,7 +15,7 @@ async function stateMachine ({ data }) {
   case CREATE:
     try {
       const result = await (await fetch(
-        `/${ITEMS}`, {
+        `/todos`, {
           body: payload,
           credentials: 'same-origin',
           headers: {
@@ -41,7 +39,7 @@ async function stateMachine ({ data }) {
     try {
       const key = JSON.parse(payload).key
       const result = await (await fetch(
-        `/${ITEMS}/${key}`, {
+        `/todos/${key}`, {
           body: payload,
           credentials: 'same-origin',
           headers: {
@@ -65,7 +63,7 @@ async function stateMachine ({ data }) {
     try {
       const key = JSON.parse(payload).key
       const result = await (await fetch(
-        `/${ITEMS}/${key}/delete`, {
+        `/todos/${key}/delete`, {
           body: payload,
           credentials: 'same-origin',
           headers: {
@@ -88,7 +86,7 @@ async function stateMachine ({ data }) {
   case LIST:
     try {
       const result = await (await fetch(
-        `/${ITEMS}`, {
+        `/todos`, {
           credentials: 'same-origin',
           headers: {
             'Accept': 'application/json',
@@ -110,7 +108,7 @@ async function stateMachine ({ data }) {
   case CLEAR:
     try {
       await fetch(
-        `/${ITEMS}/completed/delete`, {
+        `/todos/completed/delete`, {
           credentials: 'same-origin',
           headers: {
             'Accept': 'application/json',
@@ -131,7 +129,7 @@ async function stateMachine ({ data }) {
   case TOGGLE:
     try {
       const result = await (await fetch(
-        `/${ITEMS}/toggle`, {
+        `/todos/toggle`, {
           credentials: 'same-origin',
           headers: {
             'Accept': 'application/json',
