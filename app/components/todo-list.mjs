@@ -228,6 +228,32 @@ export default class TodoList extends CustomElement  {
 	margin-bottom: -1px;
 }
 
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	.toggle-all,
+	.todo-list li .toggle {
+		background: none;
+	}
+
+	.todo-list li .toggle {
+		height: 40px;
+	}
+}
+
+@media (max-width: 430px) {
+	.footer {
+		height: 50px;
+	}
+
+	.filters {
+		bottom: 10px;
+	}
+}
+
+.toggle-all:focus + label {
+	box-shadow: 0 0 2px 2px #CF7D7D;
+	outline: 0;
+}
+
     </style>
     <section class="main" style="display: ${display};">
       <form action="/todos/toggle" method="POST">

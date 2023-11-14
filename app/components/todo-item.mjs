@@ -82,6 +82,28 @@ form .destroy:after {
   position: absolute;
   transform: translate(-50%, -50%);
 }
+.edit {
+	position: relative;
+	margin: 0;
+	width: 100%;
+	font-size: 24px;
+	font-family: inherit;
+	font-weight: inherit;
+	line-height: 1.4em;
+	color: inherit;
+	padding: 6px;
+	border: 1px solid #999;
+	box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
+	box-sizing: border-box;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.view:focus-within {
+	box-shadow: 0 0 2px 2px #CF7D7D;
+	outline: 0;
+
+}
+
 </style>
 <div class="view">
   <form  action="/todos/${key}" class=" update-todo " method="POST" >
