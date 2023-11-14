@@ -95,8 +95,6 @@ form .destroy:after {
 	border: 1px solid #999;
 	box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
 	box-sizing: border-box;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
 }
 .view:focus-within {
 	box-shadow: 0 0 2px 2px #CF7D7D;
