@@ -20,7 +20,6 @@ const  DESTROY_FAILED = 'destroy-failed'
 const  LIST    = 'list'
 const  CLEAR   = 'clear'
 const  TOGGLE  = 'toggle'
-const  FLASH   = 'flash'
 
 const store = Store()
 
@@ -126,18 +125,9 @@ function workerResponse(e) {
   case TOGGLE:
     listMutation(result)
     break
-  case FLASH:
-    flashMessage(result)
   }
 }
 
-function flashMessage({ message }) {
-  if (store.flash) {
-    store.flash.push(message)
-  } else {
-    store.flash = [message]
-  }
-}
 
 function updateStore(todos) {
   store.todos = todos

@@ -6,7 +6,6 @@ const DESTROY_FAILED = 'destroy-failed'
 const LIST = 'list'
 const CLEAR = 'clear'
 const TOGGLE = 'toggle'
-const FLASH = 'flash'
 
 
 self.onmessage = stateMachine
@@ -33,10 +32,7 @@ async function stateMachine ({ data }) {
       })
     }
     catch (err) {
-      self.postMessage({
-        type:FLASH,
-        result:err
-      })
+      console.log(err)
     }
     break
   case UPDATE:
@@ -60,10 +56,7 @@ async function stateMachine ({ data }) {
       })
     }
     catch (err) {
-      self.postMessage({
-        type:FLASH,
-        result:err
-      })
+      console.log(err)
     }
     break
   case DESTROY:
@@ -81,10 +74,7 @@ async function stateMachine ({ data }) {
           method: 'POST'
         })).json()
       if (result.problems){
-        self.postMessage({
-          type:FLASH,
-          result:result.problems
-        })
+        console.log(err)
       }
     }
     catch (err) {
@@ -92,16 +82,12 @@ async function stateMachine ({ data }) {
         type: DESTROY_FAILED,
         result:{key}
       })
-      self.postMessage({
-        type:FLASH,
-        result:err
-      })
     }
     break
   case LIST:
     try {
       const result = await (await fetch(
-        `/todos`, {
+        `/`, {
           credentials: 'same-origin',
           headers: {
             'Accept': 'application/json',
@@ -116,10 +102,7 @@ async function stateMachine ({ data }) {
         result
       })
     } catch (err) {
-      self.postMessage({
-        type:FLASH,
-        result:err
-      })
+      console.log(err)
     }
     break
   case CLEAR:
@@ -139,10 +122,7 @@ async function stateMachine ({ data }) {
         type: CLEAR
       })
     } catch (err) {
-      self.postMessage({
-        type:FLASH,
-        result:err
-      })
+      console.log(err)
     }
     break
   case TOGGLE:
@@ -163,10 +143,7 @@ async function stateMachine ({ data }) {
         result
       })
     } catch (err) {
-      self.postMessage({
-        type:FLASH,
-        result:err
-      })
+      console.log(err)
     }
     break
   }
