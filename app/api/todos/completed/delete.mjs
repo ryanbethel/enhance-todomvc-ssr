@@ -16,14 +16,14 @@ export async function post (req) {
     await Promise.all(completed.map(todo=>deleteTodo(todo.key)))
     return {
       session: newSession,
-      location: '/todos'
+      location: '/'
     }
   }
   catch (err) {
     return {
       session: { ...newSession, error: err.message },
       json: { error: err.message },
-      location: '/todos'
+      location: '/'
     }
   }
 }

@@ -2,9 +2,11 @@
 const CREATE = 'create'
 const UPDATE = 'update'
 const DESTROY = 'destroy'
+const DESTROY_FAILED = 'destroy-failed'
 const LIST = 'list'
 const CLEAR = 'clear'
 const TOGGLE = 'toggle'
+const FLASH = 'flash'
 
 
 self.onmessage = stateMachine
@@ -31,8 +33,10 @@ async function stateMachine ({ data }) {
       })
     }
     catch (err) {
-      // RESPOND WITH ERROR
-      console.error(err)
+      self.postMessage({
+        type:FLASH,
+        result:err
+      })
     }
     break
   case UPDATE:
@@ -56,12 +60,16 @@ async function stateMachine ({ data }) {
       })
     }
     catch (err) {
-      console.error(err)
+      self.postMessage({
+        type:FLASH,
+        result:err
+      })
     }
     break
   case DESTROY:
+    let key
     try {
-      const key = JSON.parse(payload).key
+      key = JSON.parse(payload).key
       const result = await (await fetch(
         `/todos/${key}/delete`, {
           body: payload,
@@ -72,15 +80,22 @@ async function stateMachine ({ data }) {
           },
           method: 'POST'
         })).json()
-
-      self.postMessage({
-        type: DESTROY,
-        result
-      })
+      if (result.problems){
+        self.postMessage({
+          type:FLASH,
+          result:result.problems
+        })
+      }
     }
     catch (err) {
-      // RESPOND WITH ERROR
-      console.error(err)
+      self.postMessage({
+        type: DESTROY_FAILED,
+        result:{key}
+      })
+      self.postMessage({
+        type:FLASH,
+        result:err
+      })
     }
     break
   case LIST:
@@ -101,8 +116,10 @@ async function stateMachine ({ data }) {
         result
       })
     } catch (err) {
-      // RESPOND WITH ERROR
-      console.error(err)
+      self.postMessage({
+        type:FLASH,
+        result:err
+      })
     }
     break
   case CLEAR:
@@ -122,8 +139,10 @@ async function stateMachine ({ data }) {
         type: CLEAR
       })
     } catch (err) {
-      // RESPOND WITH ERROR
-      console.error(err)
+      self.postMessage({
+        type:FLASH,
+        result:err
+      })
     }
     break
   case TOGGLE:
@@ -144,8 +163,10 @@ async function stateMachine ({ data }) {
         result
       })
     } catch (err) {
-      // RESPOND WITH ERROR
-      console.error(err)
+      self.postMessage({
+        type:FLASH,
+        result:err
+      })
     }
     break
   }

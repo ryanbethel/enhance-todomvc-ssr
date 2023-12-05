@@ -2,33 +2,7 @@
 /**
   * @typedef {import('@enhance/types').EnhanceApiFn} EnhanceApiFn
   */
-import { getTodos, upsertTodo, validate } from '../models/todos.mjs'
-
-
-/**
- * @type {EnhanceApiFn}
- */
-export async function get (req) {
-  let todos = await getTodos()
-  let active = todos.filter(todo => !todo.completed)
-  let completed = todos.filter(todo => todo.completed)
-
-  if (req.session.problems) {
-    let { problems, todo, ...session } = req.session
-    return {
-      session,
-      json: { problems, todos, todo }
-    }
-  }
-
-  const filter = req.query.filter
-  if (filter==='active') todos = active
-  if (filter==='completed') todos = completed
-
-  return {
-    json: { todos, active, completed, filter }
-  }
-}
+import { upsertTodo, validate } from '../models/todos.mjs'
 
 /**
  * @type {EnhanceApiFn}
@@ -41,7 +15,7 @@ export async function post (req) {
     return {
       session: { ...session, problems, todo },
       json: { problems, todo },
-      location: '/todos'
+      location: '/'
     }
   }
 
@@ -52,14 +26,14 @@ export async function post (req) {
     return {
       session: newSession,
       json: { todo: result },
-      location: '/todos'
+      location: '/'
     }
   }
   catch (err) {
     return {
       session: { ...newSession, error: err.message },
       json: { error: err.message },
-      location: '/todos'
+      location: '/'
     }
   }
 }
